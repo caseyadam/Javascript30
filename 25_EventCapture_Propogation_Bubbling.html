@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Understanding JavaScript's Capture</title>
+</head>
+<body class="bod">
+
+  <div class="one">
+    <div class="two">
+      <div class="three">
+      </div>
+    </div>
+  </div>
+
+<style>
+  html {
+    box-sizing: border-box;
+  }
+  *, *:before, *:after { box-sizing: inherit; }
+
+  div {
+    width:100%;
+    padding:100px;
+  }
+
+  .one {
+    background: thistle;
+  }
+
+  .two {
+    background:mistyrose;
+  }
+
+  .three {
+    background:coral;
+  }
+</style>
+
+<button></button>
+
+<script>
+  //listens for click on all divs
+  const divs = document.querySelectorAll('div');
+  const button = document.querySelector('button');
+
+  function logText(e) {
+    console.log(this.classList.value);
+    //this will say stop bubbling this even UP
+    //bubbling is when the listen goes down all the elements then begins triggering of the click events as it goes back up
+    // e.stopPropagation();
+    // console.log(this); < if you use this you'll see the elements themselves
+  }
+
+  //take divs, loop over each one, on click > logText
+  divs.forEach(div => div.addEventListener('click', logText, {
+    //when you click, the logText won't be run on the bubble up, but instead the run down
+    capture: false,
+    //'once' is new to the browser. It listens for a click, then unbind itself (same as div.removeEventListener)
+    once: true
+  }));
+
+  button.addEventListener('click', () => {
+    console.log('Click!!!');
+  }, {
+    //you can click the button once and never again. Could be good for store checkouts
+    once: true
+  });
+
+</script>
+</body>
+</html>

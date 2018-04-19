@@ -8,6 +8,7 @@
 <body>
 
   <div class="keys">
+    <!-- 'data-' allows you to add your own attributes to an HTML element -->
     <div data-key="65" class="key">
       <kbd>A</kbd>
       <span class="sound">clap</span>
@@ -58,25 +59,41 @@
 
 <script>
 
+  //'e' passes in information from the event
   function playSound(e){
+    //'e' aka 'event' is a term native to javascript. It identifies the current target for the event, as the event traverses the DOM. It always refers to the element to which the event handler has been attached, as opposed to event.target which identifies the element on which the event occurred.
+    //keyCode is also part of javascript. It gets the Unicode value of the pressed keyboard key
+    //e.keyCode pulls the specific key number from the resulting array
     const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
     const key = document.querySelector(`.key[data-key="${e.keyCode}"]`);
-    if(!audio) return; //stops the function from running
-    audio.currentTime = 0; //rewind to the start
+    //if a key press does not return audio, it stops the function from running
+    if(!audio) return;
+    //rewind to the start. this way you can hit the keys quick and it does not wait until the sound ends to replay the sound.
+    //'currentTime' sets the time position. If you don't use equals, it returns the time
+    audio.currentTime = 0;
+    //The play() method starts playing the current audio (or video too).
     audio.play();
+    //'key' is the class on the divs. 'playing' is also an unassigned css class
+    //'classList' is DOM property
     key.classList.add('playing');
     // key.classList.remove('playing');
     // key.classList.toggle('playing');
   }
 
+  // this function removes the 'playing' class we added. It is triggered by the event listener
   function removeTransition(e) {
-    if(e.propertyName !== 'transform') return; // skip it if its not a transform
+    // skip it if its not a transform
+    if(e.propertyName !== 'transform') return;
+    // this = data-key. 'This' is equal to what got called against it.
     this.classList.remove('playing');
   }
 
-  const keys = document.querySelectorAll('.key'); //this gets an array of every element
+  //this gets an array of every element
+  const keys = document.querySelectorAll('.key');
+  //listens for transition end, then runs removeTransition function
+  //The 'transitionend' js event is fired when a CSS transition has completed. It is native to JS
   keys.forEach(key => key.addEventListener('transitionend', removeTransition));
-
+  //listens for the keydown event, then playSound function runs
   window.addEventListener('keydown', playSound);
 
 </script>
